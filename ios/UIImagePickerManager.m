@@ -122,7 +122,7 @@ RCT_EXPORT_METHOD(showImagePicker:(NSDictionary *)options callback:(RCTResponseS
         });
     }
     else { // iOS 7 support
-        UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:title delegate:self cancelButtonTitle:cancelTitle destructiveButtonTitle:nil otherButtonTitles:takePhotoButtonTitle, chooseFromLibraryButtonTitle, nil];
+        UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:title delegate:self cancelButtonTitle:cancelTitle destructiveButtonTitle:nil otherButtonTitles:chooseFromLibraryButtonTitle, nil];
     
         if ([self.options objectForKey:@"customButtons"] && [[self.options objectForKey:@"customButtons"] isKindOfClass:[NSDictionary class]]) {
             self.customButtons = [self.options objectForKey:@"customButtons"];
@@ -152,9 +152,6 @@ RCT_EXPORT_METHOD(showImagePicker:(NSDictionary *)options callback:(RCTResponseS
         }
         switch (buttonIndex) {
             case 0:
-                [self launchImagePicker:RNImagePickerTargetCamera];
-                break;
-            case 1:
                 [self launchImagePicker:RNImagePickerTargetLibrarySingleImage];
                 break;
             default:
