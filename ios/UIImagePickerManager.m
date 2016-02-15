@@ -108,6 +108,16 @@ RCT_EXPORT_METHOD(showImagePicker:(NSDictionary *)options callback:(RCTResponseS
             to mimic an action sheet */
             self.alertController.popoverPresentationController.sourceView = root.view;
             self.alertController.popoverPresentationController.sourceRect = CGRectMake(root.view.bounds.size.width / 2.0, root.view.bounds.size.height, 1.0, 1.0);
+            
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                self.alertController.popoverPresentationController.permittedArrowDirections = 0;
+                for (id subview in self.alertController.view.subviews) {
+                    if ([subview isMemberOfClass:[UIView class]]) {
+                        ((UIView *)subview).backgroundColor = [UIColor whiteColor];
+                    }
+                }
+            }
+
             [root presentViewController:self.alertController animated:YES completion:nil];
         });
     }
@@ -130,15 +140,6 @@ RCT_EXPORT_METHOD(showImagePicker:(NSDictionary *)options callback:(RCTResponseS
             [popup showInView:root.view];
         });
     }
-}
-
-- (void)launchImagePicker:(RNImagePickerTarget)target options:(NSDictionary *)options
-{
-    self.options = [NSMutableDictionary dictionaryWithDictionary:self.defaultOptions]; // Set default options
-    for (NSString *key in options.keyEnumerator) { // Replace default options
-        [self.options setValue:options[key] forKey:key];
-    }
-    [self launchImagePicker:target];
 }
 
 // iOS 7 Handler
@@ -172,13 +173,22 @@ RCT_EXPORT_METHOD(showImagePicker:(NSDictionary *)options callback:(RCTResponseS
         self.callback(@[@{@"customButton": customButtonStr}]);
         return;
     }
-
+    
     if ([action.title isEqualToString:[self.options valueForKey:@"takePhotoButtonTitle"]]) { // Take photo
         [self launchImagePicker:RNImagePickerTargetCamera];
     }
     else if ([action.title isEqualToString:[self.options valueForKey:@"chooseFromLibraryButtonTitle"]]) { // Choose from library
         [self launchImagePicker:RNImagePickerTargetLibrarySingleImage];
     }
+}
+
+- (void)launchImagePicker:(RNImagePickerTarget)target options:(NSDictionary *)options
+{
+    self.options = [NSMutableDictionary dictionaryWithDictionary:self.defaultOptions]; // Set default options
+    for (NSString *key in options.keyEnumerator) { // Replace default options
+        [self.options setValue:options[key] forKey:key];
+    }
+    [self launchImagePicker:target];
 }
 
 - (void)launchImagePicker:(RNImagePickerTarget)target
